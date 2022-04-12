@@ -1,6 +1,6 @@
-IMAGE_NAMESPACE = quay.io/purestorage
+IMAGE_NAMESPACE = ddejaege
 IMAGE_NAME = pure-fa-exporter
-IMAGE_TAG ?= latest
+IMAGE_TAG ?= 1.0
 EXPORTER ?= pure_fa_exporter
 REQUIREMENTS = requirements.fa.txt
 DOCKERFILE ?= Dockerfile.fa

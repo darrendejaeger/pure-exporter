@@ -3,7 +3,7 @@
 from flask import Flask, request, abort, make_response
 from flask_httpauth import HTTPTokenAuth
 from urllib.parse import parse_qs
-import re
+import os, re
 from prometheus_client import generate_latest, CollectorRegistry, CONTENT_TYPE_LATEST
 from flasharray_collector import FlasharrayCollector
 
@@ -16,8 +16,10 @@ class InterceptRequestMiddleware:
     def __call__(self, environ, start_response):
         d = parse_qs(environ['QUERY_STRING'])
         api_token = d.get('apitoken', [''])[0] # Returns the first api-token value
-        if 'HTTP_AUTHORIZATION' not in environ:
-            environ['HTTP_AUTHORIZATION'] = 'Bearer ' + api_token
+        if not api_token:
+            # If apitoken doesn't come across as a request arg, use the token defined in the environment
+            api_token = os.getenv('APITOKEN')
+        environ['HTTP_AUTHORIZATION'] = 'Bearer ' + api_token
         return self.wsgi_app(environ, start_response)
 
 app = Flask(__name__)
@@ -84,6 +86,9 @@ def route_flasharray(m_type: str):
     registry = CollectorRegistry()
     try:
         endpoint = request.args.get('endpoint', None)
+        if endpoint is None:
+            # If endpoint doesn't come across as a request arg, use the endpoint defined in the environment
+            endpoint = os.getenv('FA_ENDPOINT')
         token = auth.current_user()
         registry.register(collector(endpoint, token, m_type))
     except Exception as e:
