@@ -28,6 +28,12 @@ The exporter is provided as three different options:
 - pure-fa-exporter.  FlashArray exporter
 - pure-fb-exporter.  FlashBlade exporter
 
+### Forked Notes
+
+API token and the Pure endpoint (**for pure-fa-exporter only**) have been tweaked to be read from the environment if request args aren't sent, to better align with an alternate usecase. Expected environment variables:
+
+- APITOKEN
+- FA_ENDPOINT
 
 ### Building and Deploying
 
