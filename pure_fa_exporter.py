@@ -19,6 +19,8 @@ class InterceptRequestMiddleware:
         if not api_token:
             # If apitoken doesn't come across as a request arg, use the token defined in the environment
             api_token = os.getenv('APITOKEN')
+            if api_token is None:
+                abort(401)
         environ['HTTP_AUTHORIZATION'] = 'Bearer ' + api_token
         return self.wsgi_app(environ, start_response)
 
@@ -89,6 +91,8 @@ def route_flasharray(m_type: str):
         if endpoint is None:
             # If endpoint doesn't come across as a request arg, use the endpoint defined in the environment
             endpoint = os.getenv('FA_ENDPOINT')
+            if endpoint is None:
+                abort(401)
         token = auth.current_user()
         registry.register(collector(endpoint, token, m_type))
     except Exception as e:

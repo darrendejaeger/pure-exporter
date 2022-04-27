@@ -1,6 +1,6 @@
 IMAGE_NAMESPACE = ddejaege
 IMAGE_NAME = pure-fa-exporter
-IMAGE_TAG ?= 1.0
+IMAGE_TAG ?= 1.0.1
 EXPORTER ?= pure_fa_exporter
 REQUIREMENTS = requirements.fa.txt
 DOCKERFILE ?= Dockerfile.fa
