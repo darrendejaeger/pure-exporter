@@ -1,10 +1,14 @@
+import os
 import re
 import urllib3
 import purestorage
 
 
-# disable ceritificate warnings
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# Check for the path of a certificate bundle to use for SSL verification
+cert_path = os.getenv('CACERTPATH')
+if not cert_path:
+    # disable ceritificate warnings as we will default to insecure
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 PURE_NAA = 'naa.624a9370'
 
@@ -34,7 +38,8 @@ class FlashArray:
             self.flasharray =  purestorage.FlashArray(
                 endpoint,
                 api_token=api_token,
-                user_agent='Purity_FA_Prometheus_exporter/1.0')
+                user_agent='Purity_FA_Prometheus_exporter/1.0',
+                request_kwargs={"verify": cert_path} if cert_path else None)
         except purestorage.PureError:
             pass
 

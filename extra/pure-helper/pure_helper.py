@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from flask import Flask, request, abort, make_response, jsonify
+import os
 import urllib3
 import purestorage
 
@@ -101,12 +102,16 @@ def route_error_500(error):
 
 
 def list_volume_connections(target, api_token, volume):
-    # disable ceritificate warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    # Check for the path of a certificate bundle to use for SSL verification
+    cert_path = os.getenv('CACERTPATH')
+    if not cert_path:
+        # disable ceritificate warnings as we will default to insecure
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     conn = purestorage.FlashArray(
             target,
             api_token=api_token,
-            user_agent='Purity_FA_Prometheus_exporter/1.0')
+            user_agent='Purity_FA_Prometheus_exporter/1.0',
+            request_kwargs={"verify": cert_path} if cert_path else None)
     array = conn.get()
     p_hosts = conn.list_volume_private_connections(volume)
     s_hosts = conn.list_volume_shared_connections(volume)
@@ -125,12 +130,16 @@ def list_volume_connections(target, api_token, volume):
     return vol
 
 def list_host_connections(target, api_token, host):
-    # disable ceritificate warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    # Check for the path of a certificate bundle to use for SSL verification
+    cert_path = os.getenv('CACERTPATH')
+    if not cert_path:
+        # disable ceritificate warnings as we will default to insecure
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     conn = purestorage.FlashArray(
             target,
             api_token=api_token,
-            user_agent='Purity_FA_Prometheus_exporter/1.0')
+            user_agent='Purity_FA_Prometheus_exporter/1.0',
+            request_kwargs={"verify": cert_path} if cert_path else None)
     array = conn.get()
     v_list = conn.list_host_connections(host)
     vols = []
