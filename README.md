@@ -35,6 +35,8 @@ API token and the Pure endpoint (**for pure-fa-exporter only**) have been tweake
 - APITOKEN
 - FA_ENDPOINT
 
+Additionally, the `CACERTPATH` environment variable may be set to the path of a CA certificate or bundle to use for SSL verification. If set, the exporter will use this for all requests. Otherwise, verification will be disabled.
+
 ### Building and Deploying
 
 The exporter is preferably built and launched via Docker. You can also scale the exporter deployment to multiple containers on Kubernetes thanks to the stateless nature of the application.
