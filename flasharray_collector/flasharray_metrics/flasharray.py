@@ -187,7 +187,7 @@ class FlashArray:
             try:
                 for n in self.flasharray.list_network_interfaces(**params):
                     nicdict[n['name']].update(n)
-            except purestorage.PureError:
+            except (purestorage.PureError, KeyError):
                 pass
         self.network_interfaces = nicdict
         return list(self.network_interfaces.values())
