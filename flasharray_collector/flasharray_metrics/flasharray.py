@@ -186,8 +186,11 @@ class FlashArray:
         for params in nic_kpi_params:
             try:
                 for n in self.flasharray.list_network_interfaces(**params):
-                    nicdict[n['name']].update(n)
-            except (purestorage.PureError, KeyError):
+                    try:
+                        nicdict[n['name']].update(n)
+                    except KeyError:
+                        pass
+            except purestorage.PureError:
                 pass
         self.network_interfaces = nicdict
         return list(self.network_interfaces.values())
